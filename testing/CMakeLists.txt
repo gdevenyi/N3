@@ -1,6 +1,15 @@
 # TODO add tests
 SET(PERL "${PERL_EXECUTABLE}")
 
+IF(NOT MINC_TEST_ENVIRONMENT)
+  # Standalone build: the minc-toolkit superbuild normally hands down a PATH
+  # pointing at the freshly built tools. Without it the test scripts cannot
+  # find the programs they drive via MNI::Spawn, and every test fails with
+  # 'spawn: error: program "volume_hist" not registered' — those binaries
+  # (spline_smooth, volume_hist, sharpen_volume, ...) are built right here.
+  SET(MINC_TEST_ENVIRONMENT "PATH=${CMAKE_BINARY_DIR}:$ENV{PATH}")
+ENDIF()
+
 MACRO(ADD_PERL_TEST name command )
  ADD_TEST( ${name}
     ${CMAKE_CURRENT_BINARY_DIR}/../${command} ${ARGV2} ${ARGV3} ${ARGV4} ${ARGV5} ${ARGV6} ${ARGV7} ${ARGV8} ${ARGV9} ${ARGV10} ${ARGV11}
